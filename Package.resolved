@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/vapor/async.git",
         "state": {
           "branch": "beta",
-          "revision": "321effb198aedbeb987524dfd17c6e53f0c8926e",
+          "revision": "084ddafacdfd787aab905b8b63b34d13ae104d15",
           "version": null
         }
       },
@@ -24,7 +24,7 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": "beta",
-          "revision": "d960863febf2e26e32afd0f10539a4476f3636ef",
+          "revision": "05a87407d12f99abf66971304d277cf3b9e329fb",
           "version": null
         }
       },
@@ -42,7 +42,25 @@
         "repositoryURL": "https://github.com/vapor/engine.git",
         "state": {
           "branch": "beta",
-          "revision": "2009aee5a9641760b37e39a10e5fe7a948afb0c9",
+          "revision": "26556d36665c9986cb0e24e2785992a582345805",
+          "version": null
+        }
+      },
+      {
+        "package": "Fluent",
+        "repositoryURL": "https://github.com/vapor/fluent.git",
+        "state": {
+          "branch": "beta",
+          "revision": "748140fd41656d0d5487ed3cf03df21aa301ea74",
+          "version": null
+        }
+      },
+      {
+        "package": "FluentMySQL",
+        "repositoryURL": "https://github.com/vapor/mysql-driver.git",
+        "state": {
+          "branch": "beta",
+          "revision": "2aad33f589aef954830b6c5f013fb74512c58e15",
           "version": null
         }
       },
@@ -51,7 +69,16 @@
         "repositoryURL": "https://github.com/vapor/leaf.git",
         "state": {
           "branch": "beta",
-          "revision": "bb995939b257c5f24fdeb6f044708f8217f750b4",
+          "revision": "db7ff283c5c0dfe8b9404c94cf07b4e3ff18d060",
+          "version": null
+        }
+      },
+      {
+        "package": "MySQL",
+        "repositoryURL": "https://github.com/vapor/mysql.git",
+        "state": {
+          "branch": "beta",
+          "revision": "2687a3fca15d7c159b096dd10975b13a9119c857",
           "version": null
         }
       },
@@ -60,7 +87,7 @@
         "repositoryURL": "https://github.com/vapor/service.git",
         "state": {
           "branch": "beta",
-          "revision": "bfd6821603f6c0ad42feeefefcaafc1ab59cac0f",
+          "revision": "6693b1a46db13899b2ead30d91bd77950d9b5a4c",
           "version": null
         }
       },
@@ -69,7 +96,7 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": "beta",
-          "revision": "376b6573cb460dde4a3bc02da63799659967f761",
+          "revision": "d49b475338fcc977b7464967228bc428d6086c2f",
           "version": null
         }
       }
