@@ -1,5 +1,5 @@
 import Foundation
-import FluentMySQL
+import FluentSQLite
 import Vapor
 
 final class Message: Content {
@@ -22,7 +22,7 @@ final class Message: Content {
 }
 
 extension Message: Model, Migration {
-    typealias Database = MySQLDatabase
+    typealias Database = SQLiteDatabase
     typealias ID = UUID
     
     static var idKey: IDKey {
