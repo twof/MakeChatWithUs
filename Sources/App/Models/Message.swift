@@ -1,5 +1,5 @@
 import Foundation
-import FluentSQLite
+import FluentPostgreSQL
 import Vapor
 
 final class Message: Content {
@@ -14,15 +14,10 @@ final class Message: Content {
         self.body = body
         self.sender = sender
     }
-    
-//    private enum CodingKeys: String, CodingKey {
-//        case body
-//        case sender
-//    }
 }
 
-extension Message: Model, Migration {
-    typealias Database = SQLiteDatabase
+extension Message: PostgreSQLModel, Migration {
+    typealias Database = PostgreSQLDatabase
     typealias ID = UUID
     
     static var idKey: IDKey {

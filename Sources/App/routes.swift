@@ -3,7 +3,7 @@ import Vapor
 import Foundation
 import Leaf
 import HTTP
-import FluentMySQL
+//import FluentMySQL
 import WebSocket
 import Console
 
@@ -63,23 +63,31 @@ final class Routes: RouteCollection {
             ws.onString { (ws, msg) in
                 let decoder = JSONDecoder()
                 let encoder = JSONEncoder()
+                let message = try decoder.decode(Message.self, from: msg.data(using: .utf8)!)
                 
-                let allMessages
-                    = try decoder.decode(Message.self, from: msg.data(using: .utf8)!)
-                        .save(on: req)
-                        .await(on: req)
-                        .query(on: req)
-                        .all()
-                        .await(on: req)
-                
-                let allJSONMessages = try encoder.encode(allMessages).toString() ?? "error"
-                
-                ws.send(string: allJSONMessages)
+                message
+                    .save(on: req)
+                    .flatMap(to: [Message].self) { (_) -> Future<[Message]> in
+                        return Message.query(on: req).all()
+                    }.map(to: Void.self) { (allMessages) in
+                        let allJSONMessages = try encoder.encode(allMessages).toString() ?? "error"
+                        ws.send(string: allJSONMessages)
+                    }.catch({ (err) in
+                        print(err)
+                    })
             }
+
+            ws.onError({ (ws, err) in
+                print(err)
+            })
+
+            ws.onClose({ (ws, buff) in
+                print(buff)
+            })
         }
         
         router.get("allMessages") { (req) in
-            return req.withConnection(to: .sqlite, closure: { (db) in
+            return req.withConnection(to: .psql, closure: { (db) in
                 return db.query(Message.self).all()
             })
         }
