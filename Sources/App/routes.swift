@@ -9,8 +9,7 @@ import Console
 
 public func routes(_ router: Router) throws {
     router.get("hello") { req -> Future<String> in
-        let os = ProcessInfo().operatingSystemVersion
-        return Future(String(describing: os))
+        return Future("Hello, World!")
     }
     
     router.get("chat") { (req) -> Future<View> in
@@ -31,7 +30,6 @@ public func routes(_ router: Router) throws {
             }
         })
     }
-    
     
     /// Example
     /*
