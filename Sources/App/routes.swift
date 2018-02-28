@@ -77,7 +77,7 @@ public func routes(_ router: Router) throws {
     //
     router.websocket("test") { (req, ws) in
         ws.onString({ (ws, msg) in
-            _ = Message
+            Message
                 .query(on: req)
                 .all()
                 .map(to: String.self) { allMessages in
@@ -85,12 +85,29 @@ public func routes(_ router: Router) throws {
                     guard let allJSONMessages = try encoder.encode(allMessages).toString()
                         else {throw Abort(.internalServerError)}
                     return allJSONMessages
-                }.map(to: Void.self) { messageStrings in
+                }.do { messageStrings in
                     print(messageStrings)
                     return ws.send(string: messageStrings)
-            }
+                }.catch { error in
+                    print("\(error)")
+                }
         })
     }
+    
+//    router.websocket("test") { (req, ws) in
+//        ws.onString { ws, msg in
+//            print("Got: " + msg)
+//            _ = Message.query(on: req).all().map(to: String.self) { allMessages in
+//                guard let allJSONMessages = try String(data: JSONEncoder().encode(allMessages), encoding: .ascii) else {
+//                    throw Abort(.internalServerError)
+//                }
+//                return allJSONMessages
+//                }.map(to: Void.self) { messageStrings in
+//                    print(messageStrings)
+//                    return ws.send(string: messageStrings)
+//            }
+//        }
+//    }
     
     router.websocket("demo") { (req, ws) in
         ws.onString({ (ws, msg) in
@@ -106,7 +123,7 @@ public func routes(_ router: Router) throws {
 
 extension Data {
     func toString() -> String? {
-        return String(data: self, encoding: .utf8)
+        return String(data: self, encoding: .ascii)
     }
 }
 

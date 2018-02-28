@@ -1,6 +1,7 @@
 import App
 import Service
 import Vapor
+import Foundation
 
 do {
     var config = Config.default()
@@ -20,5 +21,6 @@ do {
     try app.run()
 } catch {
     print(error)
+    exit(1)
 }
 

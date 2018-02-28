@@ -4,7 +4,7 @@ import Vapor
 
 final class Message: Content {
     public var id: UUID?
-    public var date: Date = Date()
+    public var date: Date
     public var body: String
     public var sender: String
     
@@ -17,8 +17,5 @@ final class Message: Content {
 }
 
 extension Message: PostgreSQLUUIDModel, Migration {
-    static var idKey: IDKey {
-        return \.id
-    }
 }
 
