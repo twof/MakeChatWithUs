@@ -5,19 +5,13 @@ let package = Package(
     name: "MakeChatWithUs",
     dependencies: [
         // 💧 A server-side Swift web framework.
-        .package(url: "https://github.com/vapor/vapor.git", .branch("beta")),
-        .package(url: "https://github.com/vapor/fluent.git", .branch("beta")),
-        .package(url: "https://github.com/vapor/mysql-driver.git", .branch("beta")),
-        .package(url: "https://github.com/vapor/mysql.git", .branch("beta")),
-        .package(url: "https://github.com/vapor/fluent-postgresql.git", .branch("beta")),
-        .package(url: "https://github.com/vapor/postgresql.git", .branch("beta")),
-        .package(url: "https://github.com/vapor/leaf.git", .branch("beta")),
+        .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0-rc"),
+        .package(url: "https://github.com/vapor/fluent-postgresql.git", from: "1.0.0-rc.1"),
+        .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0-beta"),
         ],
     targets: [
         .target(name: "App", dependencies: [
             "Vapor",
-            "FluentMySQL",
-            "FluentSQLite",
             "FluentPostgreSQL",
             "Leaf"
             ]),

@@ -3,7 +3,7 @@ import FluentPostgreSQL
 import Vapor
 
 final class Message: Content {
-    public var id: UUID? = nil
+    public var id: UUID?
     public var date: Date = Date()
     public var body: String
     public var sender: String
@@ -16,11 +16,9 @@ final class Message: Content {
     }
 }
 
-extension Message: PostgreSQLModel, Migration {
-    typealias Database = PostgreSQLDatabase
-    typealias ID = UUID
-    
+extension Message: PostgreSQLUUIDModel, Migration {
     static var idKey: IDKey {
         return \.id
     }
 }
+

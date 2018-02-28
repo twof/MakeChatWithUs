@@ -1,9 +1,8 @@
 import Vapor
-//import FluentMySQL
 import Leaf
 import Foundation
-//import FluentSQLite
 import FluentPostgreSQL
+import AppKit
 
 /// Called before your application initializes.
 ///
@@ -13,7 +12,11 @@ public func configure(
     _ env: inout Environment,
     _ services: inout Services
 ) throws {
-    try services.register(LeafProvider())
+    let router = EngineRouter.default()
+    try routes(router)
+    services.register(router, as: Router.self)
+//    try services.register(LeafPrvider())
+//    config.prefer(LeafRenderer.self, for: TemplateRenderer.self)
 //    try services.register(FluentSQLiteProvider())
     
 //    var databaseConfig = DatabaseConfig()
@@ -27,6 +30,8 @@ public func configure(
 //    services.register(migrationConfig)
     
 //    if let databaseURL = ProcessInfo.processInfo.environment["DATABASE_URL"] {
+//        let db = MySQLDatabase(url: databaseURL)
+//    }
 //        let tokens = databaseURL
 //            .replacingOccurrences(of: "mysql://", with: "")
 //            .replacingOccurrences(of: "?reconnect=true", with: "")
