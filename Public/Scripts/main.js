@@ -1,10 +1,10 @@
 window.onload = function () {
     var messageOutput = document.getElementById('output');
-    var sock = new WebSocket("ws://localhost:8080/ping");
+    var sock = new WebSocket("ws://localhost:8080/message");
 
-    sock.onopen = function (event) {
-        sock.send("ping");
-    }
+//    sock.onopen = function (event) {
+//        sock.send("ping");
+//    }
 
     sock.onmessage = function (event) {
         console.log(event.data);

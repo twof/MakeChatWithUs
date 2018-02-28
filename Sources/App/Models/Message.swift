@@ -2,7 +2,7 @@ import Foundation
 import FluentPostgreSQL
 import Vapor
 
-final class Message: Content {
+final public class Message: Content {
     public var id: UUID?
     public var date: Date
     public var body: String

@@ -15,8 +15,8 @@ public func configure(
     let router = EngineRouter.default()
     try routes(router)
     services.register(router, as: Router.self)
-//    try services.register(LeafPrvider())
-//    config.prefer(LeafRenderer.self, for: TemplateRenderer.self)
+    try services.register(LeafProvider())
+    config.prefer(LeafRenderer.self, for: TemplateRenderer.self)
 //    try services.register(FluentSQLiteProvider())
     
 //    var databaseConfig = DatabaseConfig()
