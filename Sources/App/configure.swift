@@ -2,7 +2,6 @@ import Vapor
 import Leaf
 import Foundation
 import FluentPostgreSQL
-import AppKit
 
 /// Called before your application initializes.
 ///
@@ -17,40 +16,20 @@ public func configure(
     services.register(router, as: Router.self)
     try services.register(LeafProvider())
     config.prefer(LeafRenderer.self, for: TemplateRenderer.self)
-//    try services.register(FluentSQLiteProvider())
-    
-//    var databaseConfig = DatabaseConfig()
-//    let db = try SQLiteDatabase(storage: .memory)
-//    databaseConfig.add(database: db, as: .sqlite)
-    
-//    services.register(databaseConfig)
-    
-//    var migrationConfig = MigrationConfig()
-//    migrationConfig.add(model: Message.self, database: .mysql)
-//    services.register(migrationConfig)
-    
-//    if let databaseURL = ProcessInfo.processInfo.environment["DATABASE_URL"] {
-//        let db = MySQLDatabase(url: databaseURL)
-//    }
-//        let tokens = databaseURL
-//            .replacingOccurrences(of: "mysql://", with: "")
-//            .replacingOccurrences(of: "?reconnect=true", with: "")
-//            .split { ["@", "/", ":"].contains(String($0)) }
-//
-//        (username, password, host, database) = (String(tokens[0]), String(tokens[1]), String(tokens[2]), String(tokens[3]))
-//    }
-    
-    //    let db = MySQLDatabase(hostname: host, user: username, password: password, database: database)
-    
-    
-    //    var (username, password, host, database) = ("root", "pass", "localhost", "bathroom")
     
     try services.register(FluentPostgreSQLProvider())
-
-    let psqlDatabaseConfig = PostgreSQLDatabaseConfig(hostname: "localhost", port: 5433, username: "fnord")
+    
     var databaseConfig = DatabaseConfig()
+    let psqlDBConfig: PostgreSQLDatabaseConfig
 
-    let db = PostgreSQLDatabase(config: psqlDatabaseConfig)
+    if let databaseURL = ProcessInfo.processInfo.environment["DATABASE_URL"],
+        let database = PostgreSQLDatabaseConfig(databaseURL: databaseURL) {
+        psqlDBConfig = database
+    } else {
+        psqlDBConfig = PostgreSQLDatabaseConfig(hostname: "localhost", port: 5433, username: "fnord")
+    }
+
+    let db = PostgreSQLDatabase(config: psqlDBConfig)
     databaseConfig.add(database: db, as: .psql)
     services.register(databaseConfig)
 
@@ -59,17 +38,20 @@ public func configure(
     services.register(migrationConfig)
 }
 
-extension DatabaseIdentifier {
-//    static var mysql: DatabaseIdentifier<MySQLDatabase> {
-//        return .init("mysql")
-//
-//    }
-//
-//    static var sqlite: DatabaseIdentifier<SQLiteDatabase> {
-//        return .init("sqlite")
-//    }
-//
-    static var psql: DatabaseIdentifier<PostgreSQLDatabase> {
-        return .init("psql")
+extension PostgreSQLDatabaseConfig {
+    /// Initialize MySQLDatabase with a DB URL
+    public init?(databaseURL: String) {
+        guard let url = URL(string: databaseURL),
+            url.scheme == "mysql",
+            url.pathComponents.count == 2,
+            let hostname = url.host,
+            let username = url.user,
+            let intPort = url.port
+            else {return nil}
+        
+        let dbPort = UInt16(intPort)
+        let password = url.password
+        let database = url.pathComponents[1]
+        self.init(hostname: hostname, port: dbPort, username: username, database: database, password: password)
     }
 }
