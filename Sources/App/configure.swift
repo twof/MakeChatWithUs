@@ -14,10 +14,14 @@ public func configure(
     let router = EngineRouter.default()
     try routes(router)
     services.register(router, as: Router.self)
+    print("register router")
+    
     try services.register(LeafProvider())
     config.prefer(LeafRenderer.self, for: TemplateRenderer.self)
+    print("register leaf")
     
     try services.register(FluentPostgreSQLProvider())
+    print("register fluent psql provider")
     
     var databaseConfig = DatabaseConfig()
     let psqlDBConfig: PostgreSQLDatabaseConfig
@@ -25,17 +29,21 @@ public func configure(
     if let databaseURL = ProcessInfo.processInfo.environment["DATABASE_URL"],
         let database = PostgreSQLDatabaseConfig(databaseURL: databaseURL) {
         psqlDBConfig = database
+        print("heroku")
     } else {
+        print("local")
         psqlDBConfig = PostgreSQLDatabaseConfig(hostname: "localhost", port: 5433, username: "fnord")
     }
 
     let db = PostgreSQLDatabase(config: psqlDBConfig)
     databaseConfig.add(database: db, as: .psql)
     services.register(databaseConfig)
+    print("register db config")
 
     var migrationConfig = MigrationConfig()
     migrationConfig.add(model: Message.self, database: .psql)
     services.register(migrationConfig)
+    print("register migration config")
 }
 
 extension PostgreSQLDatabaseConfig {
