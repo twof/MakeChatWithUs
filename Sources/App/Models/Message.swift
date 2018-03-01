@@ -1,5 +1,5 @@
 import Foundation
-import FluentPostgreSQL
+import FluentMySQL
 import Vapor
 
 final public class Message: Content {
@@ -16,6 +16,6 @@ final public class Message: Content {
     }
 }
 
-extension Message: PostgreSQLUUIDModel, Migration {
+extension Message: MySQLUUIDModel, Migration {
 }
 
