@@ -57,7 +57,7 @@
             <output class="output topMargin" id="output">any</output>
             <div class="input-wrapper">
                 <input class="bottomLeftMargin" id="messageInput"></input>
-                <button class="bottomRightMargin" onclick="onSendMessage()">Send</button>
+                <button class="bottomRightMargin" id="sendMessage">Send</button>
             </div>
         </div>
     </body>

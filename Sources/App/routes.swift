@@ -30,7 +30,7 @@ public func routes(_ router: Router) throws {
             }
         })
     }
-    
+        //{"auth": "my auth token","command":"create","identifier": {"channel":"Participation"},"payload": {"participationId": 3,"longitude": 32.232,"latitude": 16.321}}
     /// Example
     /*
      {
@@ -39,20 +39,25 @@ public func routes(_ router: Router) throws {
      "sender":"Me"
      }
      */
-    router.websocket("message") { (req, ws) in
+    router.websocket("message") { (req, masterWS) in
         let allJSONMessagesFuture
             = Future(())
                 .allMessagesAsAJSONString(on: req)
                 .catch()
-       
-        ws.send(future: allJSONMessagesFuture)
         
-        ws.onString { (ws, msg) in
+       
+        masterWS.send(future: allJSONMessagesFuture)
+        
+        masterWS.onString { (ws, msg) in
             let decoder = JSONDecoder()
             let message = try decoder.decode(Message.self, from: msg.data(using: .utf8)!)
             
             ws.send(future: save(message, on: req).allMessagesAsAJSONString(on: req).catch())
         }
+    }
+    
+    router.websocket("demo") { (req, ws) in
+        Message.query(on: req).all()
     }
 
     router.get("messages") { (req) in
@@ -99,7 +104,10 @@ extension Future {
     public func allMessagesAsAJSONString(on connectable: DatabaseConnectable) -> Future<String> {
         return self
             .flatMap(to: [Message].self) { (_) -> Future<[Message]> in
-                return Message.query(on: connectable).all()
+                return Message
+                    .query(on: connectable)
+                    .sort(\Message.date, .ascending)
+                    .all()
             }.map(to: String.self) { (allMessages) in
                 guard let allJSONMessages = try allMessages.json().toString()
                     else {throw Abort(.internalServerError)}
