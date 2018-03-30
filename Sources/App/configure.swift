@@ -16,7 +16,11 @@ public func configure(
     services.register(router, as: Router.self)
     print("register router")
     
-//    try services.register(EngineServerConfig.detect())
+    let websocketRouter = EngineWebSocketServer.default()
+    websocketRoutes(websocketRouter)
+    services.register(websocketRouter, as: WebSocketServer.self)
+    print("register websockets")
+    
     
     try services.register(LeafProvider())
     config.prefer(LeafRenderer.self, for: TemplateRenderer.self)
@@ -27,15 +31,18 @@ public func configure(
     var databaseConfig = DatabaseConfig()
     let db: MySQLDatabase
     
-    if let databaseURL = ProcessInfo.processInfo.environment["DATABASE_URL"],
-        let database = MySQLDatabase(databaseURL: databaseURL) {
-        db = database
-        print("remote")
-    } else {
-        let (username, password, host, database) = ("root", "pass", "localhost", "chat")
-        db = MySQLDatabase(hostname: host, user: username, password: password, database: database)
-        print("local")
-    }
+//    if let databaseURL = ProcessInfo.processInfo.environment["DATABASE_URL"] {
+//        let mysqlConfig = MySQLDatabaseConfig(
+//        let database = MySQLDatabase(config: databaseURL)
+//        db = database
+//        print("remote")
+//    } else {
+    
+    let (username, password, host, database) = ("root", "pass", "localhost", "chat")
+    let mysqlConfig = MySQLDatabaseConfig(hostname: host, username: username, password: password, database: database)
+    
+    db = MySQLDatabase(config: mysqlConfig)
+//    }
     
     databaseConfig.add(database: db, as: .mysql)
     services.register(databaseConfig)
@@ -52,41 +59,4 @@ extension DatabaseIdentifier {
     }
 }
 
-//extension PostgreSQLDatabaseConfig {
-//    /// Initialize MySQLDatabase with a DB URL
-//    public init?(databaseURL: String) {
-//        guard let url = URL(string: databaseURL),
-//            url.scheme == "mysql",
-//            url.pathComponents.count == 2,
-//            let hostname = url.host,
-//            let username = url.user,
-//            let intPort = url.port
-//            else {return nil}
-//
-//        let dbPort = UInt16(intPort)
-//        let password = url.password
-//        let database = url.pathComponents[1]
-//        self.init(hostname: hostname, port: dbPort, username: username, database: database, password: password)
-//    }
-//}
-
-/// psql setup
-//try services.register(FluentPostgreSQLProvider())
-//print("register fluent psql provider")
-//var databaseConfig = DatabaseConfig()
-//let psqlDBConfig: PostgreSQLDatabaseConfig
-//
-//if let databaseURL = ProcessInfo.processInfo.environment["DATABASE_URL"],
-//    let database = PostgreSQLDatabaseConfig(databaseURL: databaseURL) {
-//    psqlDBConfig = database
-//    print("heroku")
-//} else {
-//    print("local")
-//    psqlDBConfig = PostgreSQLDatabaseConfig(hostname: "localhost", port: 5433, username: "fnord")
-//}
-//
-//let db = PostgreSQLDatabase(config: psqlDBConfig)
-//databaseConfig.add(database: db, as: .psql)
-//services.register(databaseConfig)
-//print("register db config")
 

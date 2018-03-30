@@ -1,3 +1,5 @@
+var messages = []
+
 function socketURI(path) {
     var loc = window.location, new_uri;
     var port = ""
@@ -12,9 +14,10 @@ function onSendMessage(sock) {
     console.log("sending message")
     
     var msg = {
-    date: Date.now() / 1000,
-    sender: "anon",
-    body: inputText
+        header: "new_message",
+        date: Date.now() / 1000,
+        sender: "anon",
+        body: inputText
     }
     sock.send(JSON.stringify(msg));
     
@@ -30,11 +33,31 @@ window.onload = function () {
     var messageOutput = document.getElementById('output');
     var sock = new WebSocket(socketURI("/message"));
 
+    var lastDate = Math.max(...messages.map(x => x["date"]))
+    
+    var msg = {
+        header: "opening_context",
+        date: lastDate / 1000
+    }
+    
+    sock.send(JSON.stringify(msg));
+    
     sock.onmessage = function (event) {
-        console.log(JSON.parse(event.data).map(x => x["body"]))
-        document.getElementById('output').innerHTML = JSON.parse(event.data).map(x => "<p class=\"message\">" + x["body"] + "</p>").join("\n")
+        messages.push(JSON.parse(event.data))
+        document.getElementById('output').innerHTML += JSON.parse(event.data).map(x => "<p class=\"message\">" + x["body"] + "</p>").join("\n")
         updateScroll()
     }
+    
+    sock.onopen = function (event) {
+        var lastDate = Math.max(...messages.map(x => x["date"]))
+        
+        var msg = {
+            header: "opening_context",
+            date: lastDate / 1000
+        }
+        
+        sock.send(JSON.stringify(msg));
+    };
 
     sock.onclose = function (event) {
         console.log(event);
